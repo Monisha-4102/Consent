@@ -1,130 +1,95 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <script data-relyance-consent-appId="app-7698a670-84ad-5aa8-9fd0-d895334d7fe9" src="https://consent.app.relyancestage.xyz/relyance-agent.js"></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tracking Technology Demo Page</title>
-    <!-- Load Tailwind CSS via CDN for modern styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Custom styles to ensure a clean look and proper font */
-        body { font-family: 'Inter', sans-serif; }
-    </style>
-    <!--
-        ===================================================================
-        START: UNBLOCKED EXTERNAL TRACKING TECHNOLOGIES (For Testing)
-        Note: These scripts are loaded immediately upon page view, which
-        is ideal for testing tools but is NOT compliant with GDPR/CCPA.
-        Replace the placeholder IDs with your real testing IDs.
-        ===================================================================
-    -->
-    <!-- 1. Google Analytics 4 (GA4) Tag - Analytics -->
-    <!-- Identifier: G-XXXXXXXXXX -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX'); /* Replace G-XXXXXXXXXX with your Measurement ID */
-    </script>
-    <!-- 2. Meta Pixel (Facebook) Base Code - Advertising -->
-    <!-- Identifier: {your-meta-pixel-id} -->
-    <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    /* Replace {your-meta-pixel-id} with your actual Pixel ID */
-    fbq('init', '{your-meta-pixel-id}');
-    fbq('track', 'PageView');
-    </script>
-    <noscript>
-        <img height="1" width="1" style="display:none" alt=""
-        src="https://www.facebook.com/tr?id={your-meta-pixel-id}&ev=PageView&noscript=1"
-        />
-    </noscript>
-    <!-- 3. LinkedIn Insight Tag - B2B Marketing -->
-    <!-- Identifier: {your-linkedin-partner-id} -->
-    <script type="text/javascript">
-    _linkedin_partner_id = "{your-linkedin-partner-id}";
-    window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
-    window._linkedin_data_partner_ids.push(_linkedin_partner_id);
-    </script>
-    <script type="text/javascript">
-    (function(l) {
-    if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
-    window.lintrk.q=[]}
-    var s = document.getElementsByTagName("script")[0];
-    var b = document.createElement("script");
-    b.type = "text/javascript";b.async = true;
-    b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
-    s.parentNode.insertBefore(b, s);})(window.lintrk);
-    </script>
-    <noscript>
-    <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid={your-linkedin-partner-id}&fmt=gif" />
-    </noscript>
-    <!--
-        ==================================================
-        END: EXTERNAL TRACKING SCRIPTS
-        ==================================================
-    -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>My Interactive Site</title>
+
+  <!-- Google Analytics (GA4) - gtag.js -->
+  <!-- Replace G-XXXXXXXXXX with your Measurement ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-NM6KE2QF95', {
+      // option: send_page_view false if you want to control page_view manually
+      // 'send_page_view': false
+    });
+
+    // helper to log custom events easily
+    function logEvent(name, params) {
+      gtag('event', name, params || {});
+      console.log('GA event:', name, params || {});
+    }
+  </script>
+
+  <style>
+    body { font-family: system-ui, Arial; max-width: 720px; margin: 2rem auto; padding: 1rem; }
+    .card { padding: 1rem; border-radius: 8px; box-shadow: 0 0 8px rgba(0,0,0,0.06); }
+    button { padding: 10px 16px; border-radius: 6px; border: none; cursor: pointer; }
+    form { margin-top: 1rem; }
+  </style>
 </head>
-<body class="bg-gray-50 min-h-screen p-4 sm:p-8">
-    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-2xl p-6 sm:p-10 border-t-4 border-indigo-600">
-        <header class="text-center mb-10">
-            <h1 class="text-4xl font-extrabold text-indigo-800 tracking-tight">
-                Web Tracking Sandbox :mag:
-            </h1>
-            <p class="mt-2 text-gray-600 text-lg">
-                This page contains three unblocked trackers for scanning and monitoring purposes.
-            </p>
-        </header>
-        <section class="mb-10 p-6 bg-indigo-50 rounded-lg border border-indigo-200">
-            <h2 class="text-2xl font-semibold text-indigo-700 mb-4">Embedded Tracking Technologies:</h2>
-            <div class="space-y-4">
-                <!-- Tracker 1 -->
-                <div class="flex items-center p-3 bg-white rounded-lg shadow-sm">
-                    <span class="text-xl mr-3 text-red-500">:bar_chart:</span>
-                    <div>
-                        <p class="font-bold text-gray-800">1. Google Analytics 4 (GA4)</p>
-                        <p class="text-sm text-gray-500">Primary tool for site traffic and user behavior analysis.</p>
-                        <code class="text-xs bg-gray-100 p-1 rounded">ID: G-XXXXXXXXXX</code>
-                    </div>
-                </div>
-                <!-- Tracker 2 -->
-                <div class="flex items-center p-3 bg-white rounded-lg shadow-sm">
-                    <span class="text-xl mr-3 text-blue-600">:bust_in_silhouette:</span>
-                    <div>
-                        <p class="font-bold text-gray-800">2. Meta Pixel (Facebook)</p>
-                        <p class="text-sm text-gray-500">Used for retargeting, conversion tracking, and audience building for Meta Ads.</p>
-                        <code class="text-xs bg-gray-100 p-1 rounded">ID: {your-meta-pixel-id}</code>
-                    </div>
-                </div>
-                <!-- Tracker 3 -->
-                <div class="flex items-center p-3 bg-white rounded-lg shadow-sm">
-                    <span class="text-xl mr-3 text-blue-700">:briefcase:</span>
-                    <div>
-                        <p class="font-bold text-gray-800">3. LinkedIn Insight Tag</p>
-                        <p class="text-sm text-gray-500">Used for B2B retargeting and collecting professional audience data.</p>
-                        <code class="text-xs bg-gray-100 p-1 rounded">ID: {your-linkedin-partner-id}</code>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="p-6 bg-yellow-50 rounded-lg border border-yellow-200">
-            <h2 class="text-2xl font-semibold text-yellow-800 mb-4">How to Scan and Monitor:</h2>
-            <ul class="list-disc list-inside space-y-2 text-gray-700">
-                <li><strong class="text-red-600">GA4:</strong> Use the **Google Tag Assistant** Chrome/Firefox extension.</li>
-                <li><strong class="text-blue-600">Meta:</strong> Use the **Meta Pixel Helper** Chrome/Firefox extension.</li>
-                <li><strong class="text-blue-700">LinkedIn:</strong> Use the **LinkedIn Insight Tag Helper** Chrome/Firefox extension.</li>
-                <li>You can also check the **Network tab** in your browser's Developer Tools (F12) and filter for requests to `google-analytics`, `facebook`, and `licdn` to see the trackers firing.</li>
-            </ul>
-        </section>
-    </div>
+<body>
+  <h1>Welcome — interactive demo</h1>
+
+  <div class="card">
+    <p>Click the button below to send a tracked event to Google Analytics.</p>
+    <button id="magicBtn">Click me!</button>
+  </div>
+
+  <div class="card" style="margin-top: 1rem;">
+    <h3>Contact (demo)</h3>
+    <form id="contactForm">
+      <label>
+        Name:<br />
+        <input name="name" type="text" required />
+      </label><br/><br/>
+      <label>
+        Message:<br />
+        <textarea name="message" required></textarea>
+      </label><br/><br/>
+      <button type="submit">Send</button>
+    </form>
+    <div id="formStatus" style="margin-top:8px;color:green;"></div>
+  </div>
+
+  <script>
+    // Track button click
+    document.getElementById('magicBtn').addEventListener('click', function() {
+      // log a custom event in GA
+      logEvent('magic_button_click', {
+        label: 'magic button',
+        value: 1
+      });
+      alert('Button clicked! Event sent to GA.');
+    });
+
+    // Track form submission
+    document.getElementById('contactForm').addEventListener('submit', function(ev){
+      ev.preventDefault();
+      const data = {
+        name: this.name.value,
+        message: this.message.value
+      };
+
+      // Example: send a GA event (don't send private info)
+      logEvent('contact_form_submit', {
+        form_name: 'demo_contact',
+        text_length: data.message.length
+      });
+
+      // fake submission UX (demo only)
+      document.getElementById('formStatus').textContent = 'Thanks! (this demo does not send form to a server)';
+      this.reset();
+    });
+
+    // optional: track page visibility (user switches tab)
+    document.addEventListener('visibilitychange', function(){
+      logEvent('page_visibility_change', { state: document.visibilityState });
+    });
+  </script>
 </body>
 </html>
