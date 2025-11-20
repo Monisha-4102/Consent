@@ -1,96 +1,125 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <script data-relyance-consent-appId="app-7698a670-84ad-5aa8-9fd0-d895334d7fe9" data-relyance-zero-fire-mode="true" src="https://consent.app.relyancestage.xyz/relyance-agent.js"></script>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>My Interactive Site</title>
-
-  <!-- Google Analytics (GA4) - gtag.js -->
-  <!-- Replace G-XXXXXXXXXX with your Measurement ID -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NM6KE2QF95"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-NM6KE2QF95', {
-      // option: send_page_view false if you want to control page_view manually
-      // 'send_page_view': false
-    });
-
-    // helper to log custom events easily
-    function logEvent(name, params) {
-      gtag('event', name, params || {});
-      console.log('GA event:', name, params || {});
-    }
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Analytics Demo Site</title>
 
   <style>
-    body { font-family: system-ui, Arial; max-width: 720px; margin: 2rem auto; padding: 1rem; }
-    .card { padding: 1rem; border-radius: 8px; box-shadow: 0 0 8px rgba(0,0,0,0.06); }
-    button { padding: 10px 16px; border-radius: 6px; border: none; cursor: pointer; }
-    form { margin-top: 1rem; }
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: auto; }
+    .card { padding: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    button { padding: 10px 15px; border: none; border-radius: 6px; background: #0070f3; color: white; cursor: pointer; }
+    #consent-banner { 
+      position: fixed; bottom: 0; left: 0; right: 0; 
+      background: #111; color: white; padding: 15px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
   </style>
 </head>
+
 <body>
-  <h1>Welcome — interactive demo</h1>
 
-  <div class="card">
-    <p>Click the button below to send a tracked event to Google Analytics.</p>
-    <button id="magicBtn">Click me!</button>
-  </div>
+<h1>Google Analytics Full Tracking Demo</h1>
+<p>This page tracks all major GA4 interactions.</p>
 
-  <div class="card" style="margin-top: 1rem;">
-    <h3>Contact (demo)</h3>
-    <form id="contactForm">
-      <label>
-        Name:<br />
-        <input name="name" type="text" required />
-      </label><br/><br/>
-      <label>
-        Message:<br />
-        <textarea name="message" required></textarea>
-      </label><br/><br/>
-      <button type="submit">Send</button>
-    </form>
-    <div id="formStatus" style="margin-top:8px;color:green;"></div>
-  </div>
+<!-- CONSENT BANNER -->
+<div id="consent-banner">
+  <span>We use cookies for analytics. Accept?</span>
+  <button onclick="acceptConsent()">Accept</button>
+</div>
 
-  <script>
-    // Track button click
-    document.getElementById('magicBtn').addEventListener('click', function() {
-      // log a custom event in GA
-      logEvent('magic_button_click', {
-        label: 'magic button',
-        value: 1
-      });
-      alert('Button clicked! Event sent to GA.');
-    });
+<!-- INTERACTIVE ELEMENTS -->
+<div class="card">
+  <h3>Button Click Event</h3>
+  <p>Click this button to log a custom event.</p>
+  <button id="magicBtn">Click Me</button>
+</div>
 
-    // Track form submission
-    document.getElementById('contactForm').addEventListener('submit', function(ev){
-      ev.preventDefault();
-      const data = {
-        name: this.name.value,
-        message: this.message.value
-      };
+<div class="card">
+  <h3>File Download Event</h3>
+  <a id="downloadLink" href="/mnt/data/Screenshot 2025-11-19 at 11.55.04 PM.png" download>Download Sample File</a>
+</div>
 
-      // Example: send a GA event (don't send private info)
-      logEvent('contact_form_submit', {
-        form_name: 'demo_contact',
-        text_length: data.message.length
-      });
+<div class="card">
+  <h3>Outbound Link Click</h3>
+  <a href="https://google.com" target="_blank" id="outLink">Visit Google</a>
+</div>
 
-      // fake submission UX (demo only)
-      document.getElementById('formStatus').textContent = 'Thanks! (this demo does not send form to a server)';
-      this.reset();
-    });
+<div class="card">
+  <h3>Contact Form</h3>
+  <form id="contactForm">
+    <label>Name:</label><br>
+    <input type="text" name="name" required><br><br>
+    <label>Message:</label><br>
+    <textarea name="message" required></textarea><br><br>
+    <button type="submit">Send</button>
+  </form>
+</div>
 
-    // optional: track page visibility (user switches tab)
-    document.addEventListener('visibilitychange', function(){
-      logEvent('page_visibility_change', { state: document.visibilityState });
-    });
-  </script>
+<!-- SCRIPT SECTION -->
+<script>
+  // Delay GA loading until consent
+  function loadAnalytics() {
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-NM6KE2QF95';
+    document.head.appendChild(s);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    window.gtag = gtag;
+
+    gtag('js', new Date());
+    gtag('config', 'G-NM6KE2QF95');
+
+    console.log("GA Loaded");
+
+    gtag('event', 'consent_given', { method: 'banner_accept' });
+  }
+
+  function acceptConsent() {
+    document.getElementById('consent-banner').style.display = 'none';
+    loadAnalytics();
+  }
+
+  // Custom event tracking
+  function logEvent(name, params = {}) {
+    if (window.gtag) {
+      gtag('event', name, params);
+      console.log("Event:", name, params);
+    }
+  }
+
+  // Button click tracking
+  document.getElementById('magicBtn').addEventListener('click', function () {
+    logEvent('magic_button_click', { button_name: 'magicBtn' });
+    alert("Event sent!");
+  });
+
+  // File download tracking
+  document.getElementById('downloadLink').addEventListener('click', function () {
+    logEvent('file_download', { file_name: 'sample_file' });
+  });
+
+  // Outbound link tracking
+  document.getElementById('outLink').addEventListener('click', function () {
+    logEvent('outbound_click', { link: 'google.com' });
+  });
+
+  // Form submission tracking
+  document.getElementById('contactForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    logEvent('contact_form_submit', { length: this.message.value.length });
+    alert("Form event logged!");
+    this.reset();
+  });
+
+  // Page visibility tracking
+  document.addEventListener("visibilitychange", function () {
+    logEvent('page_visibility_change', { state: document.visibilityState });
+  });
+</script>
+
 </body>
 </html>
