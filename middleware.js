@@ -1,38 +1,46 @@
 // middleware.js
-import { NextResponse } from 'next/server';
+// Simple Vercel Edge-compatible middleware (no next/server)
+//
+// Behavior:
+// - Allows common static asset paths to pass through
+// - Checks Authorization header for Basic <base64>
+// - Compares to process.env.BASIC_AUTH
+// - If match -> forwards the original request (fetch(request))
+// - If no match -> returns 401 + WWW-Authenticate header
 
-const AUTH_HEADER = process.env.BASIC_AUTH; // base64 of "username:password"
+const ASSET_EXT = /\.(js|css|png|jpg|jpeg|svg|ico|webmanifest|json|map|woff2?)$/i;
 
-export function middleware(request) {
-  // Allow health checks or assets if you need - adjust paths as necessary
-  const pathname = request.nextUrl.pathname;
+export default async function middleware(request) {
+  const url = new URL(request.url);
+  const pathname = url.pathname;
 
-  // Skip middleware for static assets (optional)
-  if (pathname.startsWith('/_next') || pathname.startsWith('/static') || pathname.includes('.png') || pathname.includes('.svg')) {
-    return NextResponse.next();
+  // let static assets pass through immediately
+  if (pathname.startsWith('/_next') || pathname.startsWith('/static') || ASSET_EXT.test(pathname)) {
+    return fetch(request);
   }
 
   const authHeader = request.headers.get('authorization') || '';
+  const expected = process.env.BASIC_AUTH || '';
 
-  if (!AUTH_HEADER) {
-    // If env var missing, reject to avoid accidental open site
+  if (!expected) {
     return new Response('Server misconfigured (BASIC_AUTH missing)', { status: 500 });
   }
 
-  if (!authHeader.startsWith('Basic ')) {
-    return new Response('Unauthorized', {
-      status: 401,
-      headers: { 'WWW-Authenticate': 'Basic realm="Protected"' }
-    });
+  // Expect header in form "Basic <base64>"
+  if (authHeader.startsWith('Basic ')) {
+    const provided = authHeader.split(' ')[1];
+    if (provided === expected) {
+      // authenticated — forward request to origin / next handler
+      return fetch(request);
+    }
   }
 
-  const provided = authHeader.split(' ')[1]; // base64 string
-  if (provided === AUTH_HEADER) {
-    return NextResponse.next(); // authorized
-  }
-
+  // Not authenticated — ask for credentials
   return new Response('Unauthorized', {
     status: 401,
-    headers: { 'WWW-Authenticate': 'Basic realm="Protected"' }
+    headers: {
+      'WWW-Authenticate': 'Basic realm="Protected"',
+      'Content-Type': 'text/plain; charset=utf-8'
+    }
   });
 }
