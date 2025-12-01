@@ -1,21 +1,12 @@
-// middleware.js
-// Simple Vercel Edge-compatible middleware (no next/server)
-//
-// Behavior:
-// - Allows common static asset paths to pass through
-// - Checks Authorization header for Basic <base64>
-// - Compares to process.env.BASIC_AUTH
-// - If match -> forwards the original request (fetch(request))
-// - If no match -> returns 401 + WWW-Authenticate header
-
+// middleware.js  — Edge-compatible for static sites on Vercel
 const ASSET_EXT = /\.(js|css|png|jpg|jpeg|svg|ico|webmanifest|json|map|woff2?)$/i;
 
 export default async function middleware(request) {
   const url = new URL(request.url);
   const pathname = url.pathname;
 
-  // let static assets pass through immediately
-  if (pathname.startsWith('/_next') || pathname.startsWith('/static') || ASSET_EXT.test(pathname)) {
+  // allow static assets and API routes to pass through
+  if (pathname.startsWith('/_next') || pathname.startsWith('/static') || ASSET_EXT.test(pathname) || pathname.startsWith('/api')) {
     return fetch(request);
   }
 
@@ -26,16 +17,15 @@ export default async function middleware(request) {
     return new Response('Server misconfigured (BASIC_AUTH missing)', { status: 500 });
   }
 
-  // Expect header in form "Basic <base64>"
+  // Expect header "Basic <base64>"
   if (authHeader.startsWith('Basic ')) {
     const provided = authHeader.split(' ')[1];
     if (provided === expected) {
-      // authenticated — forward request to origin / next handler
-      return fetch(request);
+      return fetch(request); // authenticated — forward request to origin
     }
   }
 
-  // Not authenticated — ask for credentials
+  // Not authenticated — prompt browser for credentials
   return new Response('Unauthorized', {
     status: 401,
     headers: {
